@@ -1,30 +1,47 @@
-import { useState } from "react";
 import type { GameDifficulty } from "~/routes/_index";
 
-type Props = GameDifficulty & {};
+type Props = GameDifficulty & {
+  current: string;
+  setCurrentDifficulty: (diff: GameDifficulty) => void;
+};
 
 function SelectDifficulty({
   difficulty,
   sprite,
   cardsPerDeck,
   cardsPerTurn,
+  current,
+  setCurrentDifficulty,
 }: Props) {
+  const isSelected = difficulty === current;
+
   return (
-    <div className="cursor-pointer bg-texture-3 bg-green-900 bg-blend-overlay p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105">
+    <div
+      onClick={() =>
+        setCurrentDifficulty({ difficulty, cardsPerDeck, cardsPerTurn })
+      }
+      className={`${
+        isSelected && "ring-8 ring-cyan-900"
+      } select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105`}
+    >
       <img
         src={sprite}
         alt="Sprite of a Pokemon"
-        className="w-[7rem] mb-2"
+        className="w-[5rem] sm:w-[7rem] mb-2 contrast-125"
       ></img>
       <div className="sm:text-center p-2">
-        <h1 className="text-3xl font-black tracking-tight ">{difficulty}</h1>
+        <h1
+          className={`${
+            isSelected && "text-cyan-900"
+          } text-3xl font-bold tracking-tight`}
+        >
+          {difficulty}
+        </h1>
         <p className="font-thin">
-          {" "}
-          <span className="font-bold">- {cardsPerTurn}</span> cartas por turno
+          <span className="font-bold">- {cardsPerTurn}</span> cards per turn
         </p>
         <p className="font-thin">
-          {" "}
-          <span className="font-bold">- {cardsPerDeck}</span> cartas por mazo
+          <span className="font-bold">- {cardsPerDeck}</span> cards per deck
         </p>
       </div>
     </div>
