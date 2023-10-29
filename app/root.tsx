@@ -25,7 +25,7 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div className="bg-gradient-to-br from-zinc-800 to-zinc-950 min-h-[100dvh] text-white">
+        <div className="bg-zinc-800 bg-texture-2 bg-blend-multiply min-h-[100dvh] text-white">
           <Outlet />
         </div>
         <ScrollRestoration />
