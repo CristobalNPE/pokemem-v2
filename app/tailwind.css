@@ -9,7 +9,7 @@
   @apply box-border;
 }
 .btn-layered-3d {
-  @apply w-fit relative inline-block cursor-pointer align-middle no-underline text-[inherit] font-semibold  px-[2.5em] py-[1.1em] rounded-[0.75em] border-0 before:absolute before:content-[""] before:w-full before:h-full before:rounded-[inherit] before:inset-0 hover:translate-y-[0.25em];
+  @apply w-full sm:w-fit sm:min-w-[20rem] relative inline-block cursor-pointer align-middle no-underline text-[inherit] font-semibold  px-[2.5em] py-[1.1em] rounded-[0.75em] border-0 before:absolute before:content-[""] before:w-full before:h-full before:rounded-[inherit] before:inset-0 hover:translate-y-[0.25em];
   outline: none;
   font-family: inherit;
   transform-style: preserve-3d;
@@ -24,8 +24,8 @@
 }
 .btn-layered-3d--blue {
   @apply text-white  before:shadow-green-900;
-  background: rgb(20 83 45/.9);
+  background: rgb(20 83 45/0.9);
 }
 .btn-layered-3d--blue::before {
-  background: rgb(20 83 45/.5);
+  background: rgb(20 83 45/0.5);
 }
