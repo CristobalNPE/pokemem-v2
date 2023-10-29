@@ -48,9 +48,9 @@ export default function Index() {
 
   return (
     <div className="flex justify-center items-center min-h-[100dvh]  ">
-      <div className="h-[100dvh] w-fit justify-center sm:h-auto flex flex-col items-center gap-5 bg-zinc-800 bg-texture-2 bg-blend-multiply shadow-xl  shadow-zinc-950 bg-repeat mx-auto p-4 sm:p-12 rounded-lg">
+      <div className="h-[100dvh] w-fit justify-center sm:h-auto flex flex-col items-center gap-5 mx-auto p-4 sm:p-12">
         <img
-          className="mx-auto sm:pt-6 w-[30rem] brightness-125 hover:brightness-150 hover:scale-105 transition-all cursor-pointer"
+          className="mx-auto sm:pt-6 w-[30rem] brightness-125 "
           src={Logo}
           alt="PokeMem Logo"
         />
@@ -65,7 +65,10 @@ export default function Index() {
             />
           ))}
         </div>
-        <button className=" btn  btn-layered-3d btn-layered-3d--blue text-xl">
+        <button
+          onClick={() => alert(JSON.stringify(currentDifficulty))}
+          className="btn  btn-layered-3d btn-layered-3d--blue text-xl"
+        >
           Play
         </button>
       </div>
