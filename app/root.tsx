@@ -1,5 +1,5 @@
-import { cssBundleHref } from "@remix-run/css-bundle";
 import type { LinksFunction } from "@remix-run/node";
+
 import {
   Links,
   LiveReload,
@@ -9,9 +9,15 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+import stylesheet from "~/tailwind.css";
+
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  { rel: "stylesheet", href: stylesheet },
 ];
+
+// export const links: LinksFunction = () => [
+//   ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+// ];
 
 export default function App() {
   return (
@@ -23,7 +29,9 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Outlet />
+        <div className="bg-gradient-to-br from-zinc-800 to-zinc-950 min-h-[100dvh] text-white">
+          <Outlet />
+        </div>
         <ScrollRestoration />
         <Scripts />
         <LiveReload />
