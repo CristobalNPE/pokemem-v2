@@ -10,6 +10,7 @@ function SelectDifficulty({
   sprite,
   cardsPerDeck,
   cardsPerTurn,
+
   current,
   setCurrentDifficulty,
 }: Props) {
@@ -31,6 +32,7 @@ function SelectDifficulty({
         value={`${difficulty},${cardsPerDeck},${cardsPerTurn}`}
         id={difficulty}
         className="hidden"
+        defaultChecked={difficulty === "Easy"}
       />
 
       <img
