@@ -9,7 +9,7 @@ type Props = {
 function PokemonCard({ id, name, sprite }: Props) {
   return (
     <Tilt tiltReverse>
-      <article className="max-w-[15rem] bg-texture-1 bg-zinc-500  bg-blend-multiply p-2 rounded-xl flex flex-col justify-center items-center gap-2">
+      <article className="cursor-pointer max-w-[15rem] bg-texture-1 bg-zinc-500  bg-blend-multiply p-2 rounded-xl flex flex-col justify-center items-center gap-2">
         <img
           src={sprite}
           alt={`Sprite of ${name}`}
