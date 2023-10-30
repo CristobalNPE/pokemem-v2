@@ -1,13 +1,18 @@
-import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import {
+  json,
+  redirect,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+} from "@remix-run/node";
+import { Form, NavLink, useLoaderData } from "@remix-run/react";
 import type { Pokemon } from "pokenode-ts";
 import { useEffect, useState } from "react";
 import { getPokemons } from "~/api/getPokemons";
-import { bad, good } from "~/assets/sounds";
 import PokemonCard from "~/components/PokemonCard";
 import Topbar from "~/components/TopBar";
 import Popover from "~/components/ui/Popover";
 import { gameSettings } from "~/cookies.server";
+import { useAudioSetup } from "~/hooks/audio";
 import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -23,6 +28,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   );
 
   return json({
+    score: cookie.score || 0,
     difficulty: cookie.difficulty,
     cardsPerDeck: cookie.cardsPerDeck,
     cardsPerTurn: cookie.cardsPerTurn,
@@ -32,32 +38,19 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Game() {
-  const goodAudio = new Audio(good);
-  const badAudio = new Audio(bad);
+  const { goodAudio, badAudio, congratsAudio } = useAudioSetup();
 
   const gameData = useLoaderData<typeof loader>();
-  const [score, setScore] = useState(0); //put score here from loader when is sent.
-
-  //When cards in array are all marked set to hidden? idk
-
-  //Have something like an array that holds all the gameData.pokemons 's id's, show just the correct amount
-  // according to the difficulty. When clicked, 'mark it or delete it from the array'. When all from array are marked
-  // we need to fetch again. There comes the difficulty.
-
-  /*
-  You finished this deck!
-  Play another deck to increase 
-  
-  */
+  const [score, setScore] = useState<number>(gameData.score);
 
   const [clickedPokemonIds, setClickedPokemonIds] = useState<number[]>([]);
   const [currentTurnCards, setCurrentTurnCards] = useState<Pokemon[]>();
   const [showCards, setShowCards] = useState(true);
   const [lostTo, setLostTo] = useState<Pokemon>();
   const [lostGame, setLostGame] = useState(false);
+  const [wonGame, setWonGame] = useState(false);
 
   const storePokemonId = (pokemonId: number) => {
-    //if ID already in array, endGame(). in endGame() we check if high score and show a modal with button to return or start again?
     if (clickedPokemonIds.includes(pokemonId)) {
       setLostTo(gameData.pokemons.find((p) => p.id === pokemonId));
       endGame();
@@ -65,18 +58,22 @@ export default function Game() {
     }
     setClickedPokemonIds((prev) => [...prev, pokemonId]);
     setScore((prev) => prev + 1);
-    goodAudio.play();
-  };
 
-  //when clikedpokemonIds.length === gamedata.cardsPerDeck =>>> fetch more
-  //for now just display a win modal, with score. If continue, refresh page but somehow pass the current score to keep building on top of it.
-  //if user decides not to continue, go to main page
-  //don't forget to check if high score before leaving the game, so user can put its name, and we send it with score and array of clicked ids to a  score table?
+    if (clickedPokemonIds.length === gameData.cardsPerDeck) {
+      finishGame();
+      return;
+    }
+    goodAudio?.play();
+  };
 
   const endGame = () => {
     setLostGame(true);
-    badAudio.play();
+    badAudio?.play();
+  };
 
+  const finishGame = () => {
+    setWonGame(true);
+    congratsAudio?.play();
   };
 
   useEffect(() => {
@@ -134,8 +131,48 @@ export default function Game() {
         </NavLink>
       </Popover>
 
-      <Topbar score={score} difficulty={gameData.difficulty} />
+      <Popover showPopover={wonGame}>
+        <h1 className="text-3xl font-bold">You Won, congrats!</h1>
+        <p className="text-lg font-thin">
+          You can play another shuffled deck to increase your score further
+        </p>
+        <div className="flex justify-around  w-full py-8">
+          <div className="flex flex-col  items-center gap-5">
+            <h2 className="text-xl font-bold ">Score</h2>
+            <span className="text-cyan-900 font-bold text-6xl tracking-tighter">
+              {score}
+            </span>
+          </div>
+        </div>
 
+        <div className="flex justify-between w-full">
+          <NavLink
+            className="inline-flex ring-2 hover:ring-1 ring-green-800 hover:brightness-110 hover:bg-green-800 transition-all py-3 px-6 rounded-lg"
+            to="/"
+          >
+            Go home
+          </NavLink>
+          <Form id="scoreForm" method="post">
+            <input type="text" name="score" value={score} hidden />
+          </Form>
+          <button
+            onClick={() => setWonGame(false)}
+            type="submit"
+            form="scoreForm"
+            className="inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
+          >
+            Keep Going!
+          </button>
+        </div>
+      </Popover>
+
+      <Topbar score={score} difficulty={gameData.difficulty} />
+      <button
+        className="bg-red-800 text-white p-2"
+        onClick={() => finishGame()}
+      >
+        test win
+      </button>
       <div
         className={`${
           !showCards && "hidden  "
@@ -160,22 +197,17 @@ export default function Game() {
   );
 }
 
-/*
-cuando clickea PLAY:
-we set difficulty in a cookie?
+export async function action({ request }: ActionFunctionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await gameSettings.parse(cookieHeader)) || {};
+  const data = await request.formData();
 
+  //TODO: We need to avoid fetching the cards that where in the deck already...
+  cookie.score = data.get("score");
 
-read that cookie in loader?
-
-use it to fetch the right number of cards?
-
-
-
---------------------------
-High score send the following object:
-- player name
-- player score
-- array of ids of pokemon clicked
-------------------
-
-*/
+  return redirect(".", {
+    headers: {
+      "Set-Cookie": await gameSettings.serialize(cookie),
+    },
+  });
+}
