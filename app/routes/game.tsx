@@ -22,17 +22,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
+  let remaining: number[] = [];
 
-  const { pokemonListData, remaining } = await getPokemons(
-    Number(cookie.cardsPerDeck)
+  const { pokemonListData, remaining: updatedRemaining } = await getPokemons(
+    Number(cookie.cardsPerDeck),
+    remaining
   );
+
+  remaining = updatedRemaining;
 
   return json({
     score: cookie.score || 0,
     difficulty: cookie.difficulty,
     cardsPerDeck: cookie.cardsPerDeck,
     cardsPerTurn: cookie.cardsPerTurn,
-    remaining: remaining,
     pokemons: pokemonListData, //defer this and put a loading that says something like : Shuffling your deck!
   });
 }
@@ -202,7 +205,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
   const data = await request.formData();
 
-  //TODO: We need to avoid fetching the cards that where in the deck already...
   cookie.score = data.get("score");
 
   return redirect(".", {
