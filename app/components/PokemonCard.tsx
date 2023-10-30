@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tilt from "react-parallax-tilt";
 
 type Props = {
@@ -9,6 +9,14 @@ type Props = {
 
 function PokemonCard({ id, name, sprite }: Props) {
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = sprite;
+    image.onload = () => {
+      setLoading(false);
+    };
+  }, [sprite]);
 
   return (
     <Tilt tiltReverse>
@@ -22,7 +30,6 @@ function PokemonCard({ id, name, sprite }: Props) {
           className={`${
             loading && "hidden "
           } " bg-gradient-to-r from-green-700 to-green-800 w-full rounded-lg py-5 h-[15rem]"`}
-          onLoad={() => setLoading(false)}
         />
         <h1 className="text-xl capitalize font-bold">{name}</h1>
       </article>
