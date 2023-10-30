@@ -16,7 +16,8 @@ function SelectDifficulty({
   const isSelected = difficulty === current;
 
   return (
-    <div
+    <label
+      htmlFor={difficulty}
       onClick={() =>
         setCurrentDifficulty({ difficulty, cardsPerDeck, cardsPerTurn })
       }
@@ -24,6 +25,14 @@ function SelectDifficulty({
         isSelected && "ring-8 ring-cyan-900"
       } shadow-lg select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105`}
     >
+      <input
+        type="radio"
+        name="difficulty"
+        value={`${difficulty},${cardsPerDeck},${cardsPerTurn}`}
+        id={difficulty}
+        className="hidden"
+      />
+
       <img
         src={sprite}
         alt="Sprite of a Pokemon"
@@ -44,7 +53,7 @@ function SelectDifficulty({
           <span className="font-bold">- {cardsPerDeck}</span> cards per deck
         </p>
       </div>
-    </div>
+    </label>
   );
 }
 

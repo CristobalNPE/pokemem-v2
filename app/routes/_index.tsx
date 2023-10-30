@@ -1,11 +1,16 @@
-import type { MetaFunction } from "@remix-run/node";
-import { NavLink, useNavigate } from "@remix-run/react";
+import {
+  redirect,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from "@remix-run/node";
+import { Form } from "@remix-run/react";
 import { useState } from "react";
 import Logo from "~/assets/PokeMemLogo.png";
 import CharmanderSprite from "~/assets/char1.png";
 import CharmeleonSprite from "~/assets/char2.png";
 import CharizardSprite from "~/assets/char3.png";
 import SelectDifficulty from "~/components/SelectDifficulty";
+import { gameSettings } from "~/cookies.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -46,7 +51,6 @@ export default function Index() {
   const [currentDifficulty, setCurrentDifficulty] = useState<GameDifficulty>(
     difficulties[0]
   );
-  const navigate = useNavigate();
 
   return (
     <div className="flex justify-center items-center min-h-[100dvh]  ">
@@ -57,7 +61,11 @@ export default function Index() {
           alt="PokeMem Logo"
         />
 
-        <div className="flex sm:flex-row flex-col gap-4 sm:gap-8 my-4 sm:my-8">
+        <Form
+          id="difficultySelect"
+          method="post"
+          className="flex sm:flex-row flex-col gap-4 sm:gap-8 my-4 sm:my-8"
+        >
           {difficulties.map((diff) => (
             <SelectDifficulty
               key={diff.difficulty}
@@ -66,18 +74,36 @@ export default function Index() {
               setCurrentDifficulty={setCurrentDifficulty}
             />
           ))}
-        </div>
+        </Form>
         <button
-          onClick={() => {
-            alert(JSON.stringify(currentDifficulty));
-            navigate("game")
-          }}
+          form="difficultySelect"
+          type="submit"
           className="btn  btn-layered-3d btn-layered-3d--blue text-xl"
         >
           Play
         </button>
-       
       </div>
     </div>
   );
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await gameSettings.parse(cookieHeader)) || {};
+  const data = await request.formData();
+
+  const difficultyInfo = data.get("difficulty");
+  const [difficulty, cardsPerDeck, cardsPerTurn]: string[] = difficultyInfo
+    ? difficultyInfo.toString().split(",")
+    : [];
+
+  cookie.difficulty = difficulty;
+  cookie.cardsPerDeck = cardsPerDeck;
+  cookie.cardsPerTurn = cardsPerTurn;
+
+  return redirect("game", {
+    headers: {
+      "Set-Cookie": await gameSettings.serialize(cookie),
+    },
+  });
 }
