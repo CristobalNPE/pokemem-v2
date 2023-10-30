@@ -24,8 +24,8 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <div className="bg-zinc-800 bg-texture-2 bg-blend-multiply min-h-[100dvh] text-white">
+      <body className="bg-zinc-800 bg-texture-2 bg-blend-multiply">
+        <div className=" min-h-[100dvh]  text-white max-w-screen-2xl  mx-auto ">
           <Outlet />
         </div>
         <ScrollRestoration />
