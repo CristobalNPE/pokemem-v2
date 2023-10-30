@@ -1,3 +1,5 @@
+import { youLostSentences } from "./constants";
+
 export function randomValue() {
   return Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
 }
@@ -26,4 +28,9 @@ export function getRandomValuesFromArray(amount: number, array: number[]) {
   );
 
   return [randomValues, remainingValues];
+}
+
+export function getRandomLostSentence() {
+  const sentences = shuffleArray(youLostSentences);
+  return sentences[0];
 }
