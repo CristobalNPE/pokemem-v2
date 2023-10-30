@@ -1,4 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
+import { NavLink, useNavigate } from "@remix-run/react";
 import { useState } from "react";
 import Logo from "~/assets/PokeMemLogo.png";
 import CharmanderSprite from "~/assets/char1.png";
@@ -45,6 +46,7 @@ export default function Index() {
   const [currentDifficulty, setCurrentDifficulty] = useState<GameDifficulty>(
     difficulties[0]
   );
+  const navigate = useNavigate();
 
   return (
     <div className="flex justify-center items-center min-h-[100dvh]  ">
@@ -66,11 +68,15 @@ export default function Index() {
           ))}
         </div>
         <button
-          onClick={() => alert(JSON.stringify(currentDifficulty))}
+          onClick={() => {
+            alert(JSON.stringify(currentDifficulty));
+            navigate("game")
+          }}
           className="btn  btn-layered-3d btn-layered-3d--blue text-xl"
         >
           Play
         </button>
+       
       </div>
     </div>
   );
