@@ -97,6 +97,7 @@ export async function action({ request }: ActionFunctionArgs) {
     ? difficultyInfo.toString().split(",")
     : [];
 
+  cookie.score = 0;
   cookie.difficulty = difficulty;
   cookie.cardsPerDeck = cardsPerDeck;
   cookie.cardsPerTurn = cardsPerTurn;
