@@ -22,7 +22,7 @@ function SelectDifficulty({
       }
       className={`${
         isSelected && "ring-8 ring-cyan-900"
-      } select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105`}
+      } shadow-lg select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105`}
     >
       <img
         src={sprite}
