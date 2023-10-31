@@ -19,7 +19,7 @@ import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
-
+  console.log("Entered Loader!");
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
@@ -53,6 +53,10 @@ export default function Game() {
   const [lostTo, setLostTo] = useState<Pokemon>();
   const [lostGame, setLostGame] = useState(false);
   const [wonGame, setWonGame] = useState(false);
+
+  useEffect(() => {
+    setWonGame(false);
+  }, []);
 
   const storePokemonId = (pokemonId: number) => {
     if (clickedPokemonIds.includes(pokemonId)) {
@@ -162,7 +166,6 @@ export default function Game() {
             <input type="text" name="score" value={score} hidden />
           </Form>
           <button
-            onClick={() => setWonGame(false)}
             type="submit"
             form="scoreForm"
             className="justify-center inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
@@ -173,12 +176,12 @@ export default function Game() {
       </Popover>
 
       <Topbar score={score} difficulty={gameData.difficulty} />
-      {/* <button
+      <button
         className="bg-red-800 text-white p-2"
         onClick={() => finishGame()}
       >
         test win
-      </button> */}
+      </button>
       <AnimatePresence>
         {showCards && (
           <motion.div
@@ -222,7 +225,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
   const data = await request.formData();
-
+  console.log("Entered the action");
   cookie.score = data.get("score");
 
   return redirect(".", {
