@@ -67,7 +67,7 @@ export default function Game() {
     setClickedPokemonIds((prev) => [...prev, pokemonId]);
     setScore((prev) => prev + 1);
 
-    if (clickedPokemonIds.length === gameData.cardsPerDeck) {
+    if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
       finishGame();
       return;
     }
@@ -83,15 +83,27 @@ export default function Game() {
   const finishGame = () => {
     setWonGame(true);
     setShowCards(false);
+    setClickedPokemonIds([]);
     congratsAudio?.play();
   };
 
   useEffect(() => {
     function serveCards() {
-      const cards = shuffleArray(gameData.pokemons).slice(
-        0,
-        gameData.cardsPerTurn
-      );
+      let cards: Pokemon[];
+      let hasUniquePokemon = false;
+      let attempts = 0;
+      const maxAttempts = 100;
+
+      do {
+        cards = shuffleArray(gameData.pokemons).slice(0, gameData.cardsPerTurn);
+        hasUniquePokemon = cards.some(
+          (card) => !clickedPokemonIds.includes(card.id)
+        );
+        attempts++;
+        if (attempts >= maxAttempts) {
+          break;
+        }
+      } while (!hasUniquePokemon);
       setCurrentTurnCards(cards);
     }
     setShowCards(false);
@@ -162,8 +174,8 @@ export default function Game() {
           >
             Go home
           </NavLink>
-          <Form id="scoreForm" method="post">
-            <input type="text" name="score" value={score} hidden />
+          <Form id="scoreForm" method="post" onSubmit={() => setWonGame(false)}>
+            <input type="text" name="score" defaultValue={score} hidden />
           </Form>
           <button
             type="submit"
