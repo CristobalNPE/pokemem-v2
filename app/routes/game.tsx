@@ -19,7 +19,7 @@ import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
-  console.log("Entered Loader!");
+
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
@@ -37,7 +37,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     difficulty: cookie.difficulty,
     cardsPerDeck: cookie.cardsPerDeck,
     cardsPerTurn: cookie.cardsPerTurn,
-    pokemons: pokemonListData, //defer this and put a loading that says something like : Shuffling your deck!
+    pokemons: pokemonListData, 
   });
 }
 
@@ -237,7 +237,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
   const data = await request.formData();
-  console.log("Entered the action");
+  
   cookie.score = data.get("score");
 
   return redirect(".", {
