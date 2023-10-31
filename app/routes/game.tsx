@@ -188,12 +188,12 @@ export default function Game() {
       </Popover>
 
       <Topbar score={score} difficulty={gameData.difficulty} />
-      <button
+      {/* <button
         className="bg-red-800 text-white p-2"
         onClick={() => finishGame()}
       >
         test win
-      </button>
+      </button> */}
       <AnimatePresence>
         {showCards && (
           <motion.div
