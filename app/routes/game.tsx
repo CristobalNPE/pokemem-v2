@@ -5,6 +5,7 @@ import {
   type LoaderFunctionArgs,
 } from "@remix-run/node";
 import { Form, NavLink, useLoaderData } from "@remix-run/react";
+import { AnimatePresence, motion } from "framer-motion";
 import type { Pokemon } from "pokenode-ts";
 import { useEffect, useState } from "react";
 import { getPokemons } from "~/api/getPokemons";
@@ -71,13 +72,13 @@ export default function Game() {
 
   const endGame = () => {
     setLostGame(true);
-    setShowCards(false)
+    setShowCards(false);
     badAudio?.play();
   };
 
   const finishGame = () => {
     setWonGame(true);
-    setShowCards(false)
+    setShowCards(false);
     congratsAudio?.play();
   };
 
@@ -97,7 +98,7 @@ export default function Game() {
   }, [clickedPokemonIds, gameData.cardsPerTurn, gameData.pokemons]);
 
   return (
-    <main className="min-h-[100dvh] flex flex-col">
+    <main className="min-h-[100dvh] flex flex-col ">
       <Popover showPopover={lostGame}>
         <h1 className="text-3xl font-bold">You lost!</h1>
         <p className="text-lg italic font-thin">{getRandomLostSentence()}</p>
@@ -172,32 +173,47 @@ export default function Game() {
       </Popover>
 
       <Topbar score={score} difficulty={gameData.difficulty} />
-      <button
+      {/* <button
         className="bg-red-800 text-white p-2"
         onClick={() => finishGame()}
       >
         test win
-      </button>
-      <div
-        className={`${
-          !showCards && "hidden  "
-        }  flex flex-wrap gap-10 justify-center items-center grow py-2 overflow-hidden`}
-      >
-        {currentTurnCards?.map((pokemon) => {
-          const pokemonSprite =
-            pokemon.sprites.other?.["official-artwork"].front_default ||
-            "No Sprite";
-          return (
-            <PokemonCard
-              key={pokemon.id}
-              id={pokemon.id}
-              name={pokemon.name}
-              sprite={pokemonSprite}
-              storePokemonId={storePokemonId}
-            />
-          );
-        })}
-      </div>
+      </button> */}
+      <AnimatePresence>
+        {showCards && (
+          <motion.div
+            initial={{
+              scale: 0,
+            }}
+            animate={{
+              scale: 1,
+            }}
+            transition={{
+              duration: 1.2,
+              type: "spring",
+            }}
+            exit={{
+              scale: 0,
+            }}
+            className={`flex flex-wrap gap-10 justify-center items-center grow py-2 overflow-hidden`}
+          >
+            {currentTurnCards?.map((pokemon) => {
+              const pokemonSprite =
+                pokemon.sprites.other?.["official-artwork"].front_default ||
+                "No Sprite";
+              return (
+                <PokemonCard
+                  key={pokemon.id}
+                  id={pokemon.id}
+                  name={pokemon.name}
+                  sprite={pokemonSprite}
+                  storePokemonId={storePokemonId}
+                />
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
@@ -206,7 +222,6 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
   const data = await request.formData();
-
 
   cookie.score = data.get("score");
 
