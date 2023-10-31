@@ -19,7 +19,7 @@ import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
-  console.log("ENTERED LOADER!!!!!!!!!!!!!!!!")
+  console.log("ENTERED LOADER!!!!!!!!!!!!!!!!");
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
@@ -63,13 +63,13 @@ export default function Game() {
     setClickedPokemonIds((prev) => [...prev, pokemonId]);
     setScore((prev) => prev + 1);
 
-    if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
-      console.log(
-        `finished game ->> clickedIDsLength: ${clickedPokemonIds.length}`
-      );
-      finishGame();
-      return;
-    }
+    // if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
+    //   console.log(
+    //     `finished game ->> clickedIDsLength: ${clickedPokemonIds.length}`
+    //   );
+    //   finishGame();
+    //   return;
+    // }
     goodAudio?.play();
   };
 
@@ -101,6 +101,7 @@ export default function Game() {
 
         // Exit the loop if we reach the maximum attempts
         if (attempts >= maxAttempts) {
+          finishGame();
           break;
         }
       } while (!hasUniquePokemon);
