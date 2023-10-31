@@ -3,7 +3,7 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useNavigation } from "@remix-run/react";
 import { useState } from "react";
 import Logo from "~/assets/PokeMemLogo.png";
 import CharmanderSprite from "~/assets/char1.png";
@@ -52,6 +52,9 @@ export default function Index() {
     difficulties[0]
   );
 
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
+
   return (
     <div className="flex justify-center items-center min-h-[100dvh]  ">
       <div className="h-[100dvh] w-fit justify-center sm:h-auto flex flex-col items-center gap-5 mx-auto p-4 sm:p-12">
@@ -78,9 +81,12 @@ export default function Index() {
         <button
           form="difficultySelect"
           type="submit"
-          className="btn  btn-layered-3d btn-layered-3d--blue text-xl"
+          disabled={isLoading}
+          className={`${
+            isLoading && "brightness-75 "
+          }btn  btn-layered-3d btn-layered-3d--blue text-xl`}
         >
-          Play
+          {isLoading ? "Loading ... " : "Play"}
         </button>
       </div>
     </div>
