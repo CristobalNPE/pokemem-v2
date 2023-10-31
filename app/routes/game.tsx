@@ -19,7 +19,7 @@ import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
-  console.log("ENTERED LOADER!!!!!!!!!!!!!!!!");
+
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
@@ -63,13 +63,10 @@ export default function Game() {
     setClickedPokemonIds((prev) => [...prev, pokemonId]);
     setScore((prev) => prev + 1);
 
-    // if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
-    //   console.log(
-    //     `finished game ->> clickedIDsLength: ${clickedPokemonIds.length}`
-    //   );
-    //   finishGame();
-    //   return;
-    // }
+    if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
+      finishGame();
+      return;
+    }
     goodAudio?.play();
   };
 
@@ -82,6 +79,7 @@ export default function Game() {
   const finishGame = () => {
     setWonGame(true);
     setShowCards(false);
+    setClickedPokemonIds([]);
     congratsAudio?.play();
   };
 
@@ -91,21 +89,17 @@ export default function Game() {
       let hasUniquePokemon = false;
       let attempts = 0;
       const maxAttempts = 100;
+
       do {
         cards = shuffleArray(gameData.pokemons).slice(0, gameData.cardsPerTurn);
-
         hasUniquePokemon = cards.some(
           (card) => !clickedPokemonIds.includes(card.id)
         );
         attempts++;
-
-        // Exit the loop if we reach the maximum attempts
         if (attempts >= maxAttempts) {
-          finishGame();
           break;
         }
       } while (!hasUniquePokemon);
-
       setCurrentTurnCards(cards);
     }
     setShowCards(false);
@@ -113,12 +107,7 @@ export default function Game() {
     setTimeout(() => {
       setShowCards(true);
     }, 1000);
-  }, [
-    clickedPokemonIds,
-    gameData.cardsPerTurn,
-    gameData.cardsPerDeck,
-    gameData.pokemons,
-  ]);
+  }, [clickedPokemonIds, gameData.cardsPerTurn, gameData.pokemons]);
 
   return (
     <main className="min-h-[100dvh] flex flex-col ">
@@ -181,11 +170,10 @@ export default function Game() {
           >
             Go home
           </NavLink>
-          <Form id="scoreForm" method="post">
+          <Form id="scoreForm" method="post" onSubmit={() => setWonGame(false)}>
             <input type="text" name="score" defaultValue={score} hidden />
           </Form>
           <button
-            onClick={() => setWonGame(false)}
             type="submit"
             form="scoreForm"
             className="justify-center inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
@@ -196,12 +184,12 @@ export default function Game() {
       </Popover>
 
       <Topbar score={score} difficulty={gameData.difficulty} />
-      <button
+      {/* <button
         className="bg-red-800 text-white p-2"
         onClick={() => finishGame()}
       >
         test win
-      </button>
+      </button> */}
       <AnimatePresence>
         {showCards && (
           <motion.div

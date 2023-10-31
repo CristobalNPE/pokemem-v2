@@ -31,8 +31,8 @@ export default function Index() {
     {
       difficulty: "Easy",
       sprite: CharmanderSprite,
-      cardsPerTurn: 2,
-      cardsPerDeck: 4,
+      cardsPerTurn: 4,
+      cardsPerDeck: 20,
     },
     {
       difficulty: "Normal",
