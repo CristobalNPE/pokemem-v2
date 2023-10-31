@@ -39,7 +39,7 @@ function Topbar({ score, difficulty }: Props) {
         <button
           onClick={() => setHelpIsVisible((prev) => !prev)}
           aria-label="How to play"
-          className="bg-zinc-800 p-4 rounded-full hover:bg-zinc-900 hover:brightness-110 transition-all w-fit"
+          className="bg-zinc-800 p-4 rounded-full hover:bg-green-900 hover:brightness-110 transition-all w-fit"
         >
           <HelpCircle size={28} color="#ffffff" strokeWidth={2.5} />
         </button>
