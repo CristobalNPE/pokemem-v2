@@ -24,7 +24,7 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body className="bg-zinc-800 bg-texture-2 bg-blend-multiply scrollbar-hide">
+      <body className="bg-gradient-to-br from-zinc-950  to-zinc-800 bg-blend-multiply scrollbar-hide">
         <div className=" min-h-[100dvh]  text-white max-w-screen-2xl  mx-auto ">
           <Outlet />
         </div>
