@@ -71,11 +71,13 @@ export default function Game() {
 
   const endGame = () => {
     setLostGame(true);
+    setShowCards(false)
     badAudio?.play();
   };
 
   const finishGame = () => {
     setWonGame(true);
+    setShowCards(false)
     congratsAudio?.play();
   };
 
@@ -127,7 +129,7 @@ export default function Game() {
         </div>
 
         <NavLink
-          className="inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
+          className="justify-center w-full sm:w-fit inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
           to="/"
         >
           Go back and try again!
@@ -135,7 +137,7 @@ export default function Game() {
       </Popover>
 
       <Popover showPopover={wonGame}>
-        <h1 className="text-3xl font-bold">You Won, congrats!</h1>
+        <h1 className="text-3xl font-bold mb-5">You Won, congrats!</h1>
         <p className="text-lg font-thin">
           You can play another shuffled deck to increase your score further
         </p>
@@ -148,9 +150,9 @@ export default function Game() {
           </div>
         </div>
 
-        <div className="flex justify-between w-full">
+        <div className="flex justify-between w-full flex-col-reverse gap-3 sm:flex-row ">
           <NavLink
-            className="inline-flex ring-2 hover:ring-1 ring-green-800 hover:brightness-110 hover:bg-green-800 transition-all py-3 px-6 rounded-lg"
+            className="justify-center inline-flex ring-2 hover:ring-1 ring-green-800 hover:brightness-110 hover:bg-green-800 transition-all py-3 px-6 rounded-lg"
             to="/"
           >
             Go home
@@ -162,7 +164,7 @@ export default function Game() {
             onClick={() => setWonGame(false)}
             type="submit"
             form="scoreForm"
-            className="inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
+            className="justify-center inline-flex bg-gradient-to-r from-green-700 to-green-800 hover:bg-gradient-to-br hover:brightness-110 transition-all py-3 px-6 rounded-lg"
           >
             Keep Going!
           </button>
@@ -204,6 +206,7 @@ export async function action({ request }: ActionFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
   const data = await request.formData();
+
 
   cookie.score = data.get("score");
 
