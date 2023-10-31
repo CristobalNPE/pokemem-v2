@@ -19,7 +19,7 @@ import { getRandomLostSentence, shuffleArray } from "~/lib/utils";
 export async function loader({ request }: LoaderFunctionArgs) {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await gameSettings.parse(cookieHeader)) || {};
-
+  console.log("ENTERED LOADER!!!!!!!!!!!!!!!!")
   if (!cookie.hasOwnProperty("difficulty")) {
     return redirect("/");
   }
@@ -63,7 +63,10 @@ export default function Game() {
     setClickedPokemonIds((prev) => [...prev, pokemonId]);
     setScore((prev) => prev + 1);
 
-    if (clickedPokemonIds.length === gameData.cardsPerDeck) {
+    if (clickedPokemonIds.length === gameData.cardsPerDeck - 1) {
+      console.log(
+        `finished game ->> clickedIDsLength: ${clickedPokemonIds.length}`
+      );
       finishGame();
       return;
     }
@@ -84,10 +87,24 @@ export default function Game() {
 
   useEffect(() => {
     function serveCards() {
-      const cards = shuffleArray(gameData.pokemons).slice(
-        0,
-        gameData.cardsPerTurn
-      );
+      let cards: Pokemon[];
+      let hasUniquePokemon = false;
+      let attempts = 0;
+      const maxAttempts = 100;
+      do {
+        cards = shuffleArray(gameData.pokemons).slice(0, gameData.cardsPerTurn);
+
+        hasUniquePokemon = cards.some(
+          (card) => !clickedPokemonIds.includes(card.id)
+        );
+        attempts++;
+
+        // Exit the loop if we reach the maximum attempts
+        if (attempts >= maxAttempts) {
+          break;
+        }
+      } while (!hasUniquePokemon);
+
       setCurrentTurnCards(cards);
     }
     setShowCards(false);
@@ -95,7 +112,12 @@ export default function Game() {
     setTimeout(() => {
       setShowCards(true);
     }, 1000);
-  }, [clickedPokemonIds, gameData.cardsPerTurn, gameData.pokemons]);
+  }, [
+    clickedPokemonIds,
+    gameData.cardsPerTurn,
+    gameData.cardsPerDeck,
+    gameData.pokemons,
+  ]);
 
   return (
     <main className="min-h-[100dvh] flex flex-col ">
@@ -159,7 +181,7 @@ export default function Game() {
             Go home
           </NavLink>
           <Form id="scoreForm" method="post">
-            <input type="text" name="score" value={score} hidden />
+            <input type="text" name="score" defaultValue={score} hidden />
           </Form>
           <button
             onClick={() => setWonGame(false)}
@@ -173,12 +195,12 @@ export default function Game() {
       </Popover>
 
       <Topbar score={score} difficulty={gameData.difficulty} />
-      {/* <button
+      <button
         className="bg-red-800 text-white p-2"
         onClick={() => finishGame()}
       >
         test win
-      </button> */}
+      </button>
       <AnimatePresence>
         {showCards && (
           <motion.div
