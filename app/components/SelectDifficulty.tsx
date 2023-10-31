@@ -23,8 +23,8 @@ function SelectDifficulty({
         setCurrentDifficulty({ difficulty, cardsPerDeck, cardsPerTurn })
       }
       className={`${
-        isSelected && "ring-8 ring-cyan-900"
-      } shadow-lg select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 hover:scale-105`}
+        isSelected && "scale-110 drop-shadow-sm shadow-zinc-700 "
+      } shadow-lg select-none cursor-pointer  bg-gradient-to-t from-green-700 to-green-800  p-2 sm:p-3 rounded-lg flex sm:flex-col justify-center items-center brightness-90 transition-all hover:brightness-100 `}
     >
       <input
         type="radio"
@@ -43,8 +43,8 @@ function SelectDifficulty({
       <div className="sm:text-center p-2">
         <h1
           className={`${
-            isSelected && "text-cyan-900"
-          } text-3xl font-bold tracking-tight`}
+            isSelected && "text-cyan-900 font-bold"
+          } text-3xl tracking-tight`}
         >
           {difficulty}
         </h1>
