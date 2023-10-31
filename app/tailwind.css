@@ -29,3 +29,13 @@
 .btn-layered-3d--blue::before {
   background: rgb(20 83 45/0.5);
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
