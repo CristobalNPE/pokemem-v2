@@ -1,5 +1,5 @@
 import { NavLink } from "@remix-run/react";
-import { HelpCircle, MonitorPlay, Volume2 } from "lucide-react";
+import { HelpCircle, MonitorPlay } from "lucide-react";
 import Logo from "~/assets/PokeMemLogo.png";
 type Props = {
   score: number;
@@ -33,12 +33,7 @@ function Topbar({ score, difficulty }: Props) {
         >
           <MonitorPlay size={28} color="#ffffff" strokeWidth={2.5} />
         </button>
-        <button
-          aria-label="Disable sound"
-          className="bg-zinc-800 p-4 rounded-full hover:bg-zinc-900 hover:brightness-110 transition-all"
-        >
-          <Volume2 size={28} color="#ffffff" strokeWidth={2.5} />
-        </button>
+
         <button
           aria-label="Disable sound"
           className="bg-zinc-800 p-4 rounded-full hover:bg-zinc-900 hover:brightness-110 transition-all"
