@@ -4,6 +4,7 @@ import {
   type MetaFunction,
 } from "@remix-run/node";
 import { Form, useNavigation } from "@remix-run/react";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import Logo from "~/assets/PokeMemLogo.png";
 import CharmanderSprite from "~/assets/char1.png";
@@ -58,27 +59,68 @@ export default function Index() {
   return (
     <div className="flex justify-center items-center min-h-[100dvh]  ">
       <div className="h-[100dvh] w-fit justify-center sm:h-auto flex flex-col items-center gap-5 mx-auto p-4 sm:p-12">
-        <img
+        <motion.img
+          initial={{
+            scale: 3,
+            opacity: 0,
+          }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+          }}
+          transition={{
+            duration: 3,
+            type: "spring",
+          }}
           className="mx-auto sm:pt-6 w-[30rem] brightness-125 "
           src={Logo}
           alt="PokeMem Logo"
         />
 
-        <Form
-          id="difficultySelect"
-          method="post"
-          className="flex sm:flex-row flex-col gap-4 sm:gap-8 my-4 sm:my-8"
+        <motion.div
+          initial={{
+            scale: 0,
+            opacity: 0,
+          }}
+          animate={{
+            scale: 1,
+            opacity: 1,
+          }}
+          transition={{
+            delay: 1.5,
+            duration: 1,
+            type: "tween",
+          }}
         >
-          {difficulties.map((diff) => (
-            <SelectDifficulty
-              key={diff.difficulty}
-              {...diff}
-              current={currentDifficulty.difficulty}
-              setCurrentDifficulty={setCurrentDifficulty}
-            />
-          ))}
-        </Form>
-        <button
+          <Form
+            id="difficultySelect"
+            method="post"
+            className="flex sm:flex-row flex-col gap-4 sm:gap-8 my-4 sm:my-8"
+          >
+            {difficulties.map((diff) => (
+              <SelectDifficulty
+                key={diff.difficulty}
+                {...diff}
+                current={currentDifficulty.difficulty}
+                setCurrentDifficulty={setCurrentDifficulty}
+              />
+            ))}
+          </Form>
+        </motion.div>
+        <motion.button
+          initial={{
+            y: 500,
+            scale: 1.5,
+          }}
+          animate={{
+            y: 0,
+            scale: 1,
+          }}
+          transition={{
+            delay: 2,
+            duration: 1,
+            type: "tween",
+          }}
           form="difficultySelect"
           type="submit"
           disabled={isLoading}
@@ -87,7 +129,7 @@ export default function Index() {
           }btn  btn-layered-3d btn-layered-3d--blue text-xl`}
         >
           {isLoading ? "Loading ... " : "Play"}
-        </button>
+        </motion.button>
       </div>
     </div>
   );
